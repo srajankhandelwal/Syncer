@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,6 +24,8 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity {
 
     GoogleSignInClient mGoogleSignInClient;
+
+    ImageView loginImage;
 
     int RC_SIGN_IN = 1;
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button signinbutton = findViewById(R.id.signinbutton);
+        loginImage = findViewById(R.id.loginimage);
 
         signinbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,13 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        updateUI(account);
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account!=null) {
+            updateUI(account);
+        }
+    }
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
