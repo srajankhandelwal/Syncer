@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.syncer.ui.home.HomeFragment;
+import com.example.syncer.ui.home.HomeViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI(GoogleSignInAccount account){
-        Intent intent = new Intent(getApplicationContext(),testactivity.class);
+        Intent intent = new Intent(getApplicationContext(), main_home.class);
         startActivity(intent);
     }
 }
