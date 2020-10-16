@@ -1,18 +1,24 @@
 package com.example.syncer.ui.home;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.syncer.R;
+import com.obsez.android.lib.filechooser.ChooserDialog;
+
+import java.io.File;
 
 public class HomeFragment extends Fragment {
 
@@ -21,13 +27,32 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+                new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
+            }
+        });
+        Button openFilePicker = root.findViewById(R.id.open_file_picker);
+        openFilePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //open file picker
+                new ChooserDialog(getActivity())
+                        .withFilter(true, false)
+                        .withStartFile(Environment.getExternalStorageDirectory().getAbsolutePath())
+                        // to handle the result(s)
+                        .withChosenListener(new ChooserDialog.Result() {
+                            @Override
+                            public void onChoosePath(String path, File pathFile) {
+                                Toast.makeText(getActivity(), "FOLDER: " + path, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build()
+                        .show();
             }
         });
         return root;
