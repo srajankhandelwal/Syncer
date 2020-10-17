@@ -25,8 +25,8 @@ import java.util.Collections;
 public class MainActivity extends AppCompatActivity {
 
     String personName;
-    GoogleAccountCredential credential
-    DriveServiceHelper mdriveservicehesdfslper;
+    GoogleAccountCredential credential;
+    DriveServiceHelper mdriveservicehelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
