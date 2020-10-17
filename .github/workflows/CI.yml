@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +17,8 @@ jobs:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
           KEY_STORE: ${{ secrets.KEY_STORE }}
         run: bash scripts/secrets.sh
+      - name: Go Root
+        run: chmod +x ./gradlew  # to eliminate root user errors
 #      - name: Lint check
 #        run: ./gradlew lint
       - name: set up JDK 1.8

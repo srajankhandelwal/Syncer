@@ -4,7 +4,7 @@ on: [pull_request]
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -14,6 +14,8 @@ jobs:
           java-version: 1.8
 #      - name: Lint check
 #        run: ./gradlew lint
+      - name: Go Root
+        run: chmod +x ./gradlew  # to eliminate root user errors
       - name: Build with Gradle
         run: ./gradlew assembleDebug
       - name: Upload app APK
