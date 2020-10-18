@@ -12,7 +12,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.api.services.drive.DriveScopes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,8 +30,11 @@ public class SignInActivity extends AppCompatActivity {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
                 .requestServerAuthCode("626699297104-hgnm2c2iemr2q1hdikdr2s66997ddftg.apps.googleusercontent.com")
-                .build();
+                .build(); 
+
+
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -75,6 +80,7 @@ public class SignInActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
+            Log.i("signinactivity","Inside this");
             updateUI(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.

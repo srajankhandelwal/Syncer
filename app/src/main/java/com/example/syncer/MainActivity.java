@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     String personName;
     GoogleAccountCredential credential;
-    DriveServiceHelper mdriveservicehelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
                     .setApplicationName("Syncer")
                     .build();
 
-            mdriveservicehelper = new DriveServiceHelper(googledrive);
         }
 
         if (personName != null) {
