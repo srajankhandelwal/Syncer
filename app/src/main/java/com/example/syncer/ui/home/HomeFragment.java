@@ -143,7 +143,8 @@ public class HomeFragment extends Fragment {
       }
       // you can provide  folder id in case you want to save this file inside some folder.
       // if folder id is null, it will save file to the root
-      mDriveServiceHelper.createTextFile(uploadFileEditText.getText(), "some text",
+      /** Remove first parameter from strings as EditText functionality is implemented */
+      mDriveServiceHelper.createTextFile("uploadFileEditText.getText()", "some text",
         null) // this'll throw npe until field is initialized from editText
         .addOnSuccessListener(googleDriveFileHolder -> {
           Gson gson = new Gson();
