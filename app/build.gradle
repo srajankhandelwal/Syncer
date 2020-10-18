@@ -58,9 +58,9 @@ dependencies {
 //    }
 //
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
-//
-//    //Library for choosing directory
-//    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
+
+    //Library for choosing directory
+    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
 
     // Google Drive Rest library
     implementation 'com.github.ammarptn:GDrive-Rest-Android:1.4.3'
