@@ -11,16 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.ammarptn.gdriverest.DriveServiceHelper;
-import com.ammarptn.gdriverest.GoogleDriveFileHolder;
 import com.example.syncer.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -76,6 +74,11 @@ public class HomeFragment extends Fragment {
     delete_file = root.findViewById(R.id.delete_file_folder);
     view_folder = root.findViewById(R.id.view_file_folder);
 
+    return root;
+  }
+
+  @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
     if (account != null) {
 
@@ -94,7 +97,7 @@ public class HomeFragment extends Fragment {
     mDriveServiceHelper = new DriveServiceHelper(
       DriveServiceHelper.getGoogleDriveService(getContext(), account, "Syncer"));
 
-    create_folder.setOnClickListener(view -> {
+    create_folder.setOnClickListener(create_folder -> {
       java.io.File testFile;
       new ChooserDialog(requireActivity())
         .withFilter(true, false)
@@ -108,7 +111,7 @@ public class HomeFragment extends Fragment {
         .show();
     });
 
-    create_text_file.setOnClickListener(view -> {
+    create_text_file.setOnClickListener(here -> {
       if (mDriveServiceHelper == null) {
         Log.i(TAG, "null tha");
         return;
@@ -123,7 +126,7 @@ public class HomeFragment extends Fragment {
         .addOnFailureListener(e -> Log.d("homefrag", "onFailure: " + e.getMessage()));
     });
 
-    search_file.setOnClickListener(view -> {
+    search_file.setOnClickListener(it -> {
       if (mDriveServiceHelper == null) {
         return;
       }
@@ -135,7 +138,7 @@ public class HomeFragment extends Fragment {
         .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     });
 
-    search_folder.setOnClickListener(view -> {
+    search_folder.setOnClickListener(vie -> {
       if (mDriveServiceHelper == null) {
         return;
       }
@@ -147,7 +150,7 @@ public class HomeFragment extends Fragment {
         .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     });
 
-    create_text_file.setOnClickListener(view -> {
+    create_text_file.setOnClickListener(v -> {
       if (mDriveServiceHelper == null) {
         return;
       }
@@ -162,7 +165,8 @@ public class HomeFragment extends Fragment {
         })
         .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     });
-    download_file.setOnClickListener(view -> {
+
+    download_file.setOnClickListener(vi -> {
       if (mDriveServiceHelper == null) {
         return;
       }
@@ -175,7 +179,6 @@ public class HomeFragment extends Fragment {
 
         });
     });
-    return root;
   }
 
   void createFolder(java.io.File folder, String folderId) {
