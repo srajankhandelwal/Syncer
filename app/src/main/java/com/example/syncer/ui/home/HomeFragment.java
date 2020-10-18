@@ -94,50 +94,33 @@ public class HomeFragment extends Fragment {
     mDriveServiceHelper = new DriveServiceHelper(
       DriveServiceHelper.getGoogleDriveService(getContext(), account, "Syncer"));
 
-    create_folder.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-
-        new ChooserDialog(requireActivity())
-          .withFilter(true, false)
-          .withStartFile(Environment.getExternalStorageDirectory().getAbsolutePath())
-          // to handle the result(s)
-          .withChosenListener(new ChooserDialog.Result() {
-            @Override
-            public void onChoosePath(String path, File folder) {
-              Toast.makeText(getContext(), "FOLDER: " + path, Toast.LENGTH_SHORT).show();
-              createFolder(folder, null);
-            }
-          })
-          .build()
-          .show();
-      }
+    create_folder.setOnClickListener(view -> {
+      java.io.File testFile;
+      new ChooserDialog(requireActivity())
+        .withFilter(true, false)
+        .withStartFile(Environment.getExternalStorageDirectory().getAbsolutePath())
+        // to handle the result(s)
+        .withChosenListener((path, folder) -> {
+          Toast.makeText(getContext(), "FOLDER: " + path, Toast.LENGTH_SHORT).show();
+          //createFolder(testFile, null);
+        })
+        .build()
+        .show();
     });
 
-    create_text_file.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (mDriveServiceHelper == null) {
-          Log.i(TAG, "null tha");
-          return;
-        }
-        // you can provide  folder id in case you want to save this file inside some folder.
-        // if folder id is null, it will save file to the root
-        mDriveServiceHelper.createTextFile("textfilename.txt", "some text", null)
-          .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
-            @Override
-            public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
-              Gson gson = new Gson();
-              Log.d("homefrag", "onSuccess: " + gson.toJson(googleDriveFileHolder));
-            }
-          })
-          .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-              Log.d("homefrag", "onFailure: " + e.getMessage());
-            }
-          });
+    create_text_file.setOnClickListener(view -> {
+      if (mDriveServiceHelper == null) {
+        Log.i(TAG, "null tha");
+        return;
       }
+      // you can provide  folder id in case you want to save this file inside some folder.
+      // if folder id is null, it will save file to the root
+      mDriveServiceHelper.createTextFile("textfilename.txt", "some text", null)
+        .addOnSuccessListener(googleDriveFileHolder -> {
+          Gson gson = new Gson();
+          Log.d("homefrag", "onSuccess: " + gson.toJson(googleDriveFileHolder));
+        })
+        .addOnFailureListener(e -> Log.d("homefrag", "onFailure: " + e.getMessage()));
     });
 
     search_file.setOnClickListener(view -> {
@@ -177,70 +160,43 @@ public class HomeFragment extends Fragment {
           Gson gson = new Gson();
           Log.d(TAG, "onSuccess: " + gson.toJson(googleDriveFileHolder));
         })
-        .addOnFailureListener(new OnFailureListener() {
-          @Override
-          public void onFailure(@NonNull Exception e) {
-            Log.d(TAG, "onFailure: " + e.getMessage());
-          }
-        });
+        .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     });
-    download_file.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (mDriveServiceHelper == null) {
-          return;
-        }
-        mDriveServiceHelper.downloadFile(
-          new java.io.File(getContext().getFilesDir(), "filename.txt"), "google_drive_file_id_here")
-          .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-          })
-          .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-          });
+    download_file.setOnClickListener(view -> {
+      if (mDriveServiceHelper == null) {
+        return;
       }
+      mDriveServiceHelper.downloadFile(
+        new java.io.File(getContext().getFilesDir(), "filename.txt"), "google_drive_file_id_here")
+        .addOnSuccessListener(aVoid -> {
+
+        })
+        .addOnFailureListener(e -> {
+
+        });
     });
     return root;
   }
 
-  void createFolder(File folder, String folderId) {
+  void createFolder(java.io.File folder, String folderId) {
     mDriveServiceHelper.createFolder(folder.getName(), folderId)
-      .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
-        @Override
-        public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
-          Gson gson = new Gson();
-          Log.d(TAG, "onSuccess: Folder Created " + gson.toJson(googleDriveFileHolder));
-          File[] files = folder.listFiles();
-          if (files != null) {
-            Log.d("Files", "Size: " + files.length);
-            for (File file : files) {
-              Log.d("Files", "FileName:" + file.getName());
-              Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                  uploadFile(file, googleDriveFileHolder.getId());
-                }
-              };
-              new Thread(runnable).start();
-            }
+      .addOnSuccessListener(googleDriveFileHolder -> {
+        Gson gson = new Gson();
+        Log.d(TAG, "onSuccess: Folder Created " + gson.toJson(googleDriveFileHolder));
+        java.io.File[] files = folder.listFiles();
+        if (files != null) {
+          Log.d("Files", "Size: " + files.length);
+          for (java.io.File file : files) {
+            Log.d("Files", "FileName:" + file.getName());
+            Runnable runnable = () -> uploadFile(file, googleDriveFileHolder.getId());
+            new Thread(runnable).start();
           }
         }
       })
-      .addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-          Log.d(TAG, "onFailure: " + e.getMessage());
-        }
-      });
+      .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
   }
 
-  void uploadFile(File file, String folderId) {
+  void uploadFile(java.io.File file, String folderId) {
     if (mDriveServiceHelper == null) {
       return;
     }
@@ -248,19 +204,11 @@ public class HomeFragment extends Fragment {
       mDriveServiceHelper.uploadFile(
         new java.io.File(file.getParentFile().getAbsolutePath(), file.getName()),
         getMimeType(file.getAbsolutePath()), folderId)
-        .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
-          @Override
-          public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
-            Gson gson = new Gson();
-            Log.d(TAG, "onSuccess: " + gson.toJson(googleDriveFileHolder));
-          }
+        .addOnSuccessListener(googleDriveFileHolder -> {
+          Gson gson = new Gson();
+          Log.d(TAG, "onSuccess: " + gson.toJson(googleDriveFileHolder));
         })
-        .addOnFailureListener(new OnFailureListener() {
-          @Override
-          public void onFailure(@NonNull Exception e) {
-            Log.d(TAG, "onFailure: " + e.getMessage());
-          }
-        });
+        .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     } else {
       createFolder(file, folderId);
     }
