@@ -70,8 +70,8 @@ public class HomeFragment extends Fragment {
         view_folder = root.findViewById(R.id.view_file_folder);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if(account!=null){
-            Log.i(TAG,"not null");
+        if (account != null) {
+            Log.i(TAG, "not null");
         }
         credential = GoogleAccountCredential.usingOAuth2(getContext(), Collections.singleton(DriveScopes.DRIVE_FILE));
         credential.setSelectedAccount(account.getAccount());
@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onChoosePath(String path, File folder) {
                                 Toast.makeText(getContext(), "FOLDER: " + path, Toast.LENGTH_SHORT).show();
-                                createFolder(folder);
+                                createFolder(folder,null);
                             }
                         })
                         .build()
@@ -104,17 +104,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
         create_text_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mDriveServiceHelper  == null) {
-                    Log.i(TAG,"null tha");
+                if (mDriveServiceHelper == null) {
+                    Log.i(TAG, "null tha");
                     return;
                 }
                 // you can provide  folder id in case you want to save this file inside some folder.
                 // if folder id is null, it will save file to the root
-                mDriveServiceHelper .createTextFile("textfilename.txt", "some text", null)
+                mDriveServiceHelper.createTextFile("textfilename.txt", "some text", null)
                         .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
                             @Override
                             public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
@@ -204,21 +203,27 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    void createFolder(File folder){
-        mDriveServiceHelper .createFolder(folder.getName(), null)
+    void createFolder(File folder,String folderId) {
+        mDriveServiceHelper.createFolder(folder.getName(), folderId)
                 .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
                     @Override
                     public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
                         Gson gson = new Gson();
                         Log.d(TAG, "onSuccess: Folder Created " + gson.toJson(googleDriveFileHolder));
                         File[] files = folder.listFiles();
-                        Log.d("Files", "Size: "+ (files != null ? files.length : 0));
-                        for (File file : files) {
-                            Log.d("Files", "FileName:" + file.getName());
-                            //Upload all files async await
-                            //uploadFile(folder.getName(),file);
+                        if (files != null) {
+                            Log.d("Files", "Size: " + files.length);
+                            for (File file : files) {
+                                Log.d("Files", "FileName:" + file.getName());
+                                Runnable runnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        uploadFile(file, googleDriveFileHolder.getId());
+                                    }
+                                };
+                                new Thread(runnable).start();
+                            }
                         }
-                        uploadFile(files[0],googleDriveFileHolder.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -230,24 +235,28 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    void uploadFile(File file,String folderId){
+    void uploadFile(File file, String folderId) {
         if (mDriveServiceHelper == null) {
             return;
         }
-        mDriveServiceHelper.uploadFile(new java.io.File(file.getParentFile().getAbsolutePath(), file.getName()), getMimeType(file.getAbsolutePath()), folderId)
-                .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
-                    @Override
-                    public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
-                        Gson gson = new Gson();
-                        Log.d(TAG, "onSuccess: " + gson.toJson(googleDriveFileHolder));
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                    }
-                });
+        if (getMimeType(file.getAbsolutePath()) != null) {
+            mDriveServiceHelper.uploadFile(new java.io.File(file.getParentFile().getAbsolutePath(), file.getName()), getMimeType(file.getAbsolutePath()), folderId)
+                    .addOnSuccessListener(new OnSuccessListener<GoogleDriveFileHolder>() {
+                        @Override
+                        public void onSuccess(GoogleDriveFileHolder googleDriveFileHolder) {
+                            Gson gson = new Gson();
+                            Log.d(TAG, "onSuccess: " + gson.toJson(googleDriveFileHolder));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: " + e.getMessage());
+                        }
+                    });
+        } else {
+            createFolder(file,folderId);
+        }
     }
 
     public static String getMimeType(String url) {
