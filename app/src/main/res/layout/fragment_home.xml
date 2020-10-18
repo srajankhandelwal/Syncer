@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+>
+
 
 
     <LinearLayout
@@ -21,51 +23,75 @@
         <Button
             android:id="@+id/create_text_file"
             android:layout_width="match_parent"
+            android:layout_marginTop="7dp"
             android:layout_height="wrap_content"
-            android:text="create text file" />
+            android:background="@drawable/button_gradient"
+            android:text="create text file"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/create_folder"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="create folder" />
+            android:background="@drawable/button_gradient"
+            android:text="create folder"
+            android:textColor="#000000"/>
 
 
         <Button
             android:id="@+id/search_file"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="search file" />
+            android:background="@drawable/button_gradient"
+            android:text="search file"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/search_folder"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="search folder" />
+            android:background="@drawable/button_gradient"
+            android:text="search folder"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/upload_file"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="upload file" />
+            android:background="@drawable/button_gradient"
+            android:text="upload file"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/download_file"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="download file" />
+            android:background="@drawable/button_gradient"
+            android:text="download file"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/delete_file_folder"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="delete file" />
+            android:background="@drawable/button_gradient"
+            android:text="delete file"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/view_file_folder"
+            android:layout_marginTop="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="view folder" />
+            android:background="@drawable/button_gradient"
+            android:text="view folder"
+            android:textColor="#000000"/>
 
     </LinearLayout>
 
