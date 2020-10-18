@@ -31,7 +31,7 @@ public class SignInActivity extends AppCompatActivity {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
-                .requestServerAuthCode("626699297104-hgnm2c2iemr2q1hdikdr2s66997ddftg.apps.googleusercontent.com")
+                .requestServerAuthCode("278059242290-3t77u4i7ccm68eeusmstsu8no4nsg2fu.apps.googleusercontent.com")
                 .build(); 
 
 
